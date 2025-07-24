@@ -1,6 +1,7 @@
 from sklearn.metrics import r2_score, mean_absolute_error, root_mean_squared_error
 import os 
-import pickle 
+import pickle
+from azure.storage.blob import BlobServiceClient
 
 def evaluate_model(model, X_test, y_test):
 
@@ -29,14 +30,19 @@ def save_pipeline(pipeline_final):
     with open('model/pipeline_final.pkl', "wb") as f:
         pickle.dump(pipeline_final, f)
 
-import os
-from pathlib import Path
+def load_pipeline(filepath="model/pipeline_final.pkl", local=True):
+    if not local :
+        conn_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+        blob_svc = BlobServiceClient.from_connection_string(conn_str)
+        container = blob_svc.get_container_client("models")
+        data = container.get_blob_client("pipeline_final.pkl").download_blob().readall()
+        
+        print(f"Pipeline chargé depuis Azure Blob Storage!")
+        return pickle.loads(data)
+    
+    else:
+        with open(filepath, "rb") as f:
+            pipeline = pickle.load(f)
 
-def load_pipeline(filepath="model/pipeline_final.pkl"):
-    print("DEBUG cwd           :", os.getcwd())
-    print("DEBUG fichier cherché:", Path(filepath).resolve())
-    with open(filepath, "rb") as f:
-        pipeline = pickle.load(f)
-
-    print(f"✅ Pipeline chargé depuis : {filepath}")
-    return pipeline
+        print(f"Pipeline chargé depuis : {filepath}")
+        return pipeline
