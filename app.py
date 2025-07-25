@@ -169,8 +169,8 @@ if sl.button('Prediction'):
 ##############################################
     new_house_df = pd.DataFrame([new_house_dict])
 
-    loaded_pip = load_pipeline()
+    loaded_pip = load_pipeline(local=False)
     price_prediction = loaded_pip.predict(new_house_df)
 
-    sl.write(f"Le prix prédit est {price_prediction[0]:,.0f} €".replace(',', ' '))
+    sl.write(f"Le prix prédit est {price_prediction[0]:,.0f} € ± 53 000 €".replace(',', ' '))
 

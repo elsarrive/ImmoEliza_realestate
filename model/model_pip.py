@@ -37,6 +37,7 @@ def load_pipeline(filepath="model/pipeline_final.pkl", local=True):
         container = blob_svc.get_container_client("models")
         data = container.get_blob_client("pipeline_final.pkl").download_blob().readall()
         
+        
         print(f"Pipeline chargé depuis Azure Blob Storage!")
         return pickle.loads(data)
     
