@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # port interne // streamlit : 8501 by default
-ENV PORT=8501
+EXPOSE 8501
 
 # Lancement de Streamlit
 CMD ["streamlit", "run", "app.py", \
